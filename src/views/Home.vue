@@ -1,25 +1,40 @@
 <template>
   <b-container>
     <div>
+
+      <b-dropdown
+        id="dropdown-1"
+        text="選擇語系"
+        class="m-md-2"
+      >
+        <b-dropdown-item
+          v-for="localeObj in locales"
+          :key="localeObj.locale"
+          @click="$i18n.locale = localeObj.locale"
+        >
+          <span class="ml-50">{{ localeObj.name }}</span>
+        </b-dropdown-item>
+      </b-dropdown>
+
       <b-button
         variant="outline-primary"
         @click="$ability.update([{ action: 'manage', subject: 'all' }])"
       >
-        切換管理員
+        {{ $t('admin') }}
       </b-button>
 
       <b-button
         variant="outline-primary"
         @click="$ability.update([{ action: 'read', subject: 'User' }])"
       >
-        切換使用者
+        {{ $t('user') }}
       </b-button>
 
       <b-button
         variant="outline-primary"
         @click="$ability.update([{ action: 'read', subject: 'Member' }])"
       >
-        切換小編
+        {{ $t('editor') }}
       </b-button>
     </div>
 
@@ -57,8 +72,10 @@
 <script>
 import {
   BContainer, BRow, BCol,
+  BDropdown, BDropdownItem,
   BCard, BCardText, BButton,
 } from 'bootstrap-vue'
+import { computed } from '@vue/composition-api'
 
 export default {
   components: {
@@ -66,12 +83,33 @@ export default {
     BRow,
     BCol,
 
+    BDropdown,
+    BDropdownItem,
+
     BCard,
     BCardText,
     BButton,
   },
   setup(_, { root }) {
     root.$ability.update([])
+
+    const locales = [
+      {
+        locale: 'tw',
+        name: '中文',
+      },
+      {
+        locale: 'en',
+        name: '英文',
+      },
+    ]
+
+    const currentLocale = computed(() => locales.find(l => l.locale === root.$i18n.locale))
+
+    return {
+      locales,
+      currentLocale,
+    }
   },
 }
 </script>
